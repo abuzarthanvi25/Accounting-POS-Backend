@@ -18,7 +18,6 @@ router.post("/", (req, res) => {
 // < ============================================== MAIN ROUTES ============================================== >
 
 //ANCHOR - CUSTOMER ROUTES ===================== >
-// router.get("/api/customer", CustomerController.GetAll)
 router.get("/api/customer", CustomerController.GetAllCustomers)
 router.get("/api/find/customer", CustomerController.GetCustomerByName)
 router.post("/api/customer", CustomerController.AddCustomer)
