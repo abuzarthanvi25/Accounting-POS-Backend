@@ -16,8 +16,8 @@ const CustomerController = {
         
         response.json({
             message: "Customers get successfully",
-            users: results,
             status: true,
+            data: results,
           });
       });
     
@@ -35,14 +35,14 @@ const CustomerController = {
       if(customers){
         response.json({
           message: "Customers get successfully",
-          customers: customers,
           status: true,
+          data: customers,
         });
         return
       }
     } catch (error) {
       console.error('Error retrieving customers:', error);
-      response.json({
+      response.status(400).json({
         message: "DB Error",
         status: false,
         error: error
@@ -64,8 +64,8 @@ const CustomerController = {
         if(customer){
           response.json({
             message: "Customer added successfully",
-            customer: customer,
             status: true,
+            data: customer,
           });
           return
         }
@@ -75,7 +75,7 @@ const CustomerController = {
   
     } catch (error) {
       console.error('Error adding customer:', error);
-      response.json({
+      response.status(400).json({
         message: "Request Error",
         status: false,
         error: error?.message
@@ -108,8 +108,8 @@ const CustomerController = {
           if(customer?.length > 0){
             response.json({
               message: "Customer found successfully",
-              customer: customer,
               status: true,
+              data: customer,
             });
           }else{
             response.json({
@@ -126,7 +126,7 @@ const CustomerController = {
         })
       }
     } catch (error) {
-      response.json({
+      response.status(400).json({
         message: "Server Error",
         status: false,
         error: error
@@ -163,11 +163,11 @@ const CustomerController = {
             }).then((cus_id) => {
               response.json({
                 message: `Customer ${customer_name} deleted successfully`,
-                customer_id: cus_id,
                 status: true,
+                customer_id: cus_id,
               });
             }).catch((error) => {
-              response.json({
+              response.status(500).json({
                 message: "Request Error",
                 status: false,
                 error: "Error while deleting customer"
@@ -180,7 +180,7 @@ const CustomerController = {
             });
           }
         }).catch((error)=> {
-          response.json({
+          response.status(400).json({
             message: "Request Error",
             status: false,
             error: error
@@ -191,7 +191,7 @@ const CustomerController = {
   
     } catch (error) {
       console.error('Error deleting  customer:', error);
-      response.json({
+      response.status(400).json({
         message: "Request Error",
         status: false,
         error: error?.message
