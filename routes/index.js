@@ -8,7 +8,7 @@ const FinancialElemTypeController = require("../controllers/FinancialElemTypeCon
 const TransactionTypeController = require("../controllers/TransactionTypeController")
 
 //NOTE - TEST ROUTE
-router.post("/", (req, res) => {
+router.get("/", (req, res) => {
     res.json({
       message: "Test Route",
       status: true,
