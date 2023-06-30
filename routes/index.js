@@ -45,6 +45,7 @@ router.get("/api/transaction-types", TransactionTypeController.GetAllTransaction
 
 //NOTE - ORDER ROUTES
 router.get("/api/orders", OrderController.GetAllOrders)
+router.post("/api/orders", OrderItemsController.CreateAnOrder)
 
 //NOTE - ORDER ITEM ROUTES
 router.get("/api/order-items", OrderItemsController.GetFullOrder)
