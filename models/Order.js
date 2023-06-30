@@ -7,18 +7,15 @@ const Order = sequelize.define('Order', {
     primaryKey: true,
     autoIncrement: true, 
   },
-  invoice_id: {
+  customer_id: {
     type: Sequelize.INTEGER,
   },
-  product_id:{
+  sub_total:{
     type: Sequelize.INTEGER
   },
-  quantity: {
-    type: Sequelize.INTEGER
+  order_date: {
+    type: Sequelize.DATE
   },
-  unit_price: {
-    type: Sequelize.INTEGER
-  }
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
   tableName: 'orders'

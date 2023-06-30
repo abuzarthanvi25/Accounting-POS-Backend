@@ -1,25 +1,28 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
 
-const Invoice = sequelize.define('Invoice', {
+const OrderItems = sequelize.define('OrderItems', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true, 
   },
-  customer_id: {
+  order_id: {
     type: Sequelize.INTEGER,
   },
-  sub_total:{
+  product_id:{
     type: Sequelize.INTEGER
   },
-  invoice_date: {
-    type: Sequelize.DATE
+  quantity: {
+    type: Sequelize.INTEGER
   },
+  unit_price: {
+    type: Sequelize.INTEGER
+  }
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
-  tableName: 'invoices'
+  tableName: 'order_items'
 });
 
 
-module.exports = Invoice;
+module.exports = OrderItems;
