@@ -1,29 +1,25 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
 
-const Products = require("../models/Product")
-
-const Inventory = sequelize.define('Inventory', {
+const Invoice = sequelize.define('Invoice', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true, 
   },
-  supplier_id: {
+  customer_id: {
     type: Sequelize.INTEGER,
   },
-  product_id: {
+  sub_total:{
     type: Sequelize.INTEGER
   },
-  quantity_in_stock: {
-    type: Sequelize.INTEGER,
+  invoice_date: {
+    type: Sequelize.DATE
   },
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
-  tableName: 'inventory'
+  tableName: 'invoices'
 });
 
-Inventory.hasMany(Products)
 
-
-module.exports = Inventory;
+module.exports = Invoice;

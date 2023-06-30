@@ -6,11 +6,8 @@ const CustomerController = {
   GetAllProducts: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await Product.sync();
-      
       // Retrieve all products
-      const products = await Product.findAll({attributes: ['id', 'supplier_id', 'product_name', 'quantity_in_stock', 'unit_price']});
+      const products = await Product.findAll({attributes: ['id', 'supplier_id', 'product_name', 'unit_price']});
 
       if(products){
         response.json({
@@ -32,10 +29,6 @@ const CustomerController = {
   AddProduct: async (request, response) => {
     
     try {
-      await Product.sync();
-      await Supplier.sync();
-      await Inventory.sync();
-
       const { supplier_id, product_name, quantity_in_stock, unit_price } = request.body;
   
       // Create a new product record

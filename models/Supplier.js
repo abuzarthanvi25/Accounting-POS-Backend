@@ -13,8 +13,9 @@ const Supplier = sequelize.define('Supplier', {
   },
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns
+  tableName: 'suppliers'
 });
 
-// Supplier.hasMany(Products)
+Supplier.hasMany(Products)
 
 module.exports = Supplier;

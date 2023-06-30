@@ -4,9 +4,6 @@ const InventoryController = {
   GetAllInventory: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await Inventory.sync();
-      
       // Retrieve all products
       const allInventory = await Inventory.findAll({attributes: ['id', 'supplier_id', 'product_id', 'quantity_in_stock']});
 

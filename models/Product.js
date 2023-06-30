@@ -13,14 +13,12 @@ const Product = sequelize.define('Product', {
   product_name: {
     type: Sequelize.STRING
   },
-  quantity_in_stock: {
-    type: Sequelize.INTEGER,
-  },
   unit_price: {
     type: Sequelize.INTEGER,
   },
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
+  tableName: 'products'
 });
 
 

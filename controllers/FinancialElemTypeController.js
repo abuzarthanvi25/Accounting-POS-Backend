@@ -4,9 +4,6 @@ const FinancialElemTypeController = {
   GetAllFinancialElemTypes: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await FinancialElemType.sync();
-      
       // Retrieve all financial element types
       const financialElemTypes = await FinancialElemType.findAll({attributes: ['id', 'type_name', ]});
 

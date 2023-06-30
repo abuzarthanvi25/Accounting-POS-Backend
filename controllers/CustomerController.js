@@ -26,9 +26,6 @@ const CustomerController = {
   GetAllCustomers: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await Customer.sync();
-      
       // Retrieve all customers
       const customers = await Customer.findAll({attributes: ['id', 'customer_name']});
 
@@ -52,7 +49,6 @@ const CustomerController = {
 
   AddCustomer : async (request, response) => {
     try {
-      await Customer.sync();
       const { customer_name } = request.body;
   
       // Create a new customer record
@@ -85,8 +81,6 @@ const CustomerController = {
 
   GetCustomerByName: async (request, response) => {
     try {
-      await Customer.sync();
-
       const { customer_name } = request.query;
 
       if(!customer_name){
@@ -136,21 +130,20 @@ const CustomerController = {
 
   DeleteCustomer : async (request, response) => {
     try {
-      await Customer.sync();
-      const { customer_name } = request.query;
+      const { customer_id } = request.query;
   
-      if(!customer_name){
+      if(!customer_id){
         response.json({
           message: "Request Error",
           status: false,
-          error: "No Customer Name Specified!"
+          error: "No Customer id Specified!"
         });
         return
       }
       else{
         Customer.findAll({
           where: {
-            customer_name: customer_name
+            id: customer_id
           }
 
         
@@ -158,19 +151,18 @@ const CustomerController = {
           if(customer?.length > 0){
             Customer.destroy({
               where: {
-                customer_name: customer_name
+                id: customer_id
               }
-            }).then((cus_id) => {
+            }).then(() => {
               response.json({
-                message: `Customer ${customer_name} deleted successfully`,
+                message: `Customer ${customer_id} deleted successfully`,
                 status: true,
-                customer_id: cus_id,
               });
             }).catch((error) => {
               response.status(500).json({
                 message: "Request Error",
                 status: false,
-                error: "Error while deleting customer"
+                error: `Error while deleting customer ${error}`
               });
             })
           }else{

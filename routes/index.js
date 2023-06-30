@@ -6,6 +6,8 @@ const SupplierController = require("../controllers/SupplierController")
 const InventoryController = require("../controllers/InventoryController")
 const FinancialElemTypeController = require("../controllers/FinancialElemTypeController")
 const TransactionTypeController = require("../controllers/TransactionTypeController")
+const InvoiceController = require("../controllers/InvoiceController")
+const OrderController = require("../controllers/OrderController")
 
 //NOTE - TEST ROUTE
 router.get("/", (req, res) => {
@@ -40,5 +42,11 @@ router.get("/api/elem-types", FinancialElemTypeController.GetAllFinancialElemTyp
 
 //NOTE - TRANSACTION TYPE ROUTES ===================== >
 router.get("/api/transaction-types", TransactionTypeController.GetAllTransactionTypes)
+
+//NOTE - INVOICE ROUTES
+router.get("/api/invoices", InvoiceController.GetAllInvoices)
+
+//NOTE - ORDER ITEM ROUTES
+router.get("/api/order", OrderController.GetFullOrder)
 
 module.exports = router;
