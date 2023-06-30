@@ -21,7 +21,7 @@ const Order = sequelize.define('Order', {
   }
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
-  tableName: 'order_items'
+  tableName: 'order'
 });
 
 
