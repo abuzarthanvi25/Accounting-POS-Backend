@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
+const Inventory = require("../models/Inventory")
 
 const Product = sequelize.define('Product', {
   id: {
@@ -9,6 +10,7 @@ const Product = sequelize.define('Product', {
   },
   supplier_id: {
     type: Sequelize.INTEGER,
+    field: 'supplier_id'
   },
   product_name: {
     type: Sequelize.STRING
@@ -20,6 +22,9 @@ const Product = sequelize.define('Product', {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
   tableName: 'products'
 });
+
+Product.hasMany(Inventory, { foreignKey: 'product_id' })
+Inventory.belongsTo(Product, { foreignKey: 'product_id' })
 
 
 module.exports = Product;

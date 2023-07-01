@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
+const Product = require("../models/Product")
+const Order = require("../models/Order")
 
 const Sales = sequelize.define('Sales', {
     id: {
@@ -29,6 +31,9 @@ const Sales = sequelize.define('Sales', {
     timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
     tableName: 'sales'
   });
-  
+
+  Sales.belongsTo(Order, { foreignKey: 'order_id' });
+  Sales.belongsTo(Product, { foreignKey: 'product_id' });
+    
   
   module.exports = Sales;

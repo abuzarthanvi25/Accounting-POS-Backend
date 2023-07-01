@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
-const Products = require("../models/Product")
+const Product = require("../models/Product")
 
 const Supplier = sequelize.define('Supplier', {
   id: {
@@ -16,6 +16,7 @@ const Supplier = sequelize.define('Supplier', {
   tableName: 'suppliers'
 });
 
-Supplier.hasMany(Products)
+Supplier.hasMany(Product, { foreignKey: 'supplier_id' });
+Product.belongsTo(Supplier, { foreignKey: 'supplier_id' });
 
 module.exports = Supplier;

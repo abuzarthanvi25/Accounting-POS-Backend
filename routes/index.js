@@ -7,7 +7,8 @@ const InventoryController = require("../controllers/InventoryController")
 const FinancialElemTypeController = require("../controllers/FinancialElemTypeController")
 const TransactionTypeController = require("../controllers/TransactionTypeController")
 const OrderController = require("../controllers/OrderController")
-const OrderItemsController = require("../controllers/OrderItemsController")
+const OrderItemsController = require("../controllers/OrderItemsController");
+const SalesController = require('../controllers/SalesController');
 
 //NOTE - TEST ROUTE
 router.get("/", (req, res) => {
@@ -49,5 +50,10 @@ router.post("/api/orders", OrderItemsController.CreateAnOrder)
 
 //NOTE - ORDER ITEM ROUTES
 router.get("/api/order-items", OrderItemsController.GetFullOrder)
+
+//NOTE - SALES ROUTES
+router.get("/api/sales", SalesController.GetAllSales)
+router.get("/api/product/sales", SalesController.GetSalesByProductId)
+router.get("/api/order/sales", SalesController.GetSalesByOrderId)
 
 module.exports = router;

@@ -7,7 +7,16 @@ const CustomerController = {
     
     try {
       // Retrieve all products
-      const products = await Product.findAll({attributes: ['id', 'supplier_id', 'product_name', 'unit_price']});
+      const products = await Product.findAll(
+       {
+        include:[
+                  {
+                    model: Inventory,
+                    attributes: ['quantity_in_stock']
+                  }
+                ]
+    }
+      );
 
       if(products){
         response.json({
@@ -26,6 +35,7 @@ const CustomerController = {
       });
     }
   },
+  
   AddProduct: async (request, response) => {
     
     try {
@@ -83,6 +93,51 @@ const CustomerController = {
       });
     }
   },
+
+  GetProductsBySupplierId: async (request, response) => {
+    try {
+      const {supplier_id} = request.query
+
+      if(!supplier_id){
+        response.status(400).json({ 
+          message: 'Supplier id is required',
+          status: false,
+        });
+        return
+      }
+
+      Supplier.findByPk(supplier_id, {
+        include: Product,
+      }).then((products) => {
+        if(products?.Products.length > 0){
+          response.json({
+            message: "Products get successfully",
+            status: true,
+            data: products,
+          });
+          return
+        }else{
+          response.json({
+            message: "No products found for the given supplier id",
+            status: true,
+            data: products,
+          });
+        }
+      }).catch((error) => {
+        response.status(400).json({ 
+          message: 'Error while fetching products by supplier id',
+          status: false,
+          error: error
+        });
+      });
+    } catch (error) {
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
+  }
 };
 
 
