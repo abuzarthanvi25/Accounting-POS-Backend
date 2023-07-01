@@ -6,9 +6,12 @@ const SupplierController = require("../controllers/SupplierController")
 const InventoryController = require("../controllers/InventoryController")
 const FinancialElemTypeController = require("../controllers/FinancialElemTypeController")
 const TransactionTypeController = require("../controllers/TransactionTypeController")
+const OrderController = require("../controllers/OrderController")
+const OrderItemsController = require("../controllers/OrderItemsController");
+const SalesController = require('../controllers/SalesController');
 
 //NOTE - TEST ROUTE
-router.post("/", (req, res) => {
+router.get("/", (req, res) => {
     res.json({
       message: "Test Route",
       status: true,
@@ -17,29 +20,40 @@ router.post("/", (req, res) => {
 
 // < ============================================== MAIN ROUTES ============================================== >
 
-//ANCHOR - CUSTOMER ROUTES ===================== >
-// router.get("/api/customer", CustomerController.GetAll)
+//NOTE - CUSTOMER ROUTES ===================== >
 router.get("/api/customer", CustomerController.GetAllCustomers)
 router.get("/api/find/customer", CustomerController.GetCustomerByName)
 router.post("/api/customer", CustomerController.AddCustomer)
 router.delete("/api/customer", CustomerController.DeleteCustomer)
 
-//ANCHOR - PRODUCT ROUTES ===================== >
+//NOTE - PRODUCT ROUTES ===================== >
 router.get("/api/products", ProductController.GetAllProducts)
 router.post("/api/products", ProductController.AddProduct)
 
-//ANCHOR - SUPPLIER ROUTES ===================== >
+//NOTE - SUPPLIER ROUTES ===================== >
 router.get("/api/suppliers", SupplierController.GetAllSuppliers)
 router.get("/api/find/suppliers", SupplierController.GetSupplierByName)
 router.post("/api/suppliers", SupplierController.AddSupplier)
 
-//ANCHOR - INVENTORY ROUTES ===================== >
+//NOTE - INVENTORY ROUTES ===================== >
 router.get("/api/inventory", InventoryController.GetAllInventory)
 
-//ANCHOR - FINANCIAL ELEMENT TYPE ROUTES ===================== >
+//NOTE - FINANCIAL ELEMENT TYPE ROUTES ===================== >
 router.get("/api/elem-types", FinancialElemTypeController.GetAllFinancialElemTypes)
 
-//ANCHOR - TRANSACTION TYPE ROUTES ===================== >
+//NOTE - TRANSACTION TYPE ROUTES ===================== >
 router.get("/api/transaction-types", TransactionTypeController.GetAllTransactionTypes)
+
+//NOTE - ORDER ROUTES
+router.get("/api/orders", OrderController.GetAllOrders)
+router.post("/api/orders", OrderItemsController.CreateAnOrder)
+
+//NOTE - ORDER ITEM ROUTES
+router.get("/api/order-items", OrderItemsController.GetFullOrder)
+
+//NOTE - SALES ROUTES
+router.get("/api/sales", SalesController.GetAllSales)
+router.get("/api/product/sales", SalesController.GetSalesByProductId)
+router.get("/api/order/sales", SalesController.GetSalesByOrderId)
 
 module.exports = router;

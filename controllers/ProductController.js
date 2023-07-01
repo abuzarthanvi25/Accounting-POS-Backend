@@ -6,11 +6,17 @@ const CustomerController = {
   GetAllProducts: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await Product.sync();
-      
       // Retrieve all products
-      const products = await Product.findAll({attributes: ['id', 'supplier_id', 'product_name', 'quantity_in_stock', 'unit_price']});
+      const products = await Product.findAll(
+       {
+        include:[
+                  {
+                    model: Inventory,
+                    attributes: ['quantity_in_stock']
+                  }
+                ]
+    }
+      );
 
       if(products){
         response.json({
@@ -29,13 +35,10 @@ const CustomerController = {
       });
     }
   },
+  
   AddProduct: async (request, response) => {
     
     try {
-      await Product.sync();
-      await Supplier.sync();
-      await Inventory.sync();
-
       const { supplier_id, product_name, quantity_in_stock, unit_price } = request.body;
   
       // Create a new product record
@@ -90,6 +93,51 @@ const CustomerController = {
       });
     }
   },
+
+  GetProductsBySupplierId: async (request, response) => {
+    try {
+      const {supplier_id} = request.query
+
+      if(!supplier_id){
+        response.status(400).json({ 
+          message: 'Supplier id is required',
+          status: false,
+        });
+        return
+      }
+
+      Supplier.findByPk(supplier_id, {
+        include: Product,
+      }).then((products) => {
+        if(products?.Products.length > 0){
+          response.json({
+            message: "Products get successfully",
+            status: true,
+            data: products,
+          });
+          return
+        }else{
+          response.json({
+            message: "No products found for the given supplier id",
+            status: true,
+            data: products,
+          });
+        }
+      }).catch((error) => {
+        response.status(400).json({ 
+          message: 'Error while fetching products by supplier id',
+          status: false,
+          error: error
+        });
+      });
+    } catch (error) {
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
+  }
 };
 
 

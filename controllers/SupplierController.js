@@ -4,9 +4,6 @@ const SupplierController = {
   GetAllSuppliers: async (request, response) => {
     
     try {
-      // Synchronize the model with the database
-      await Supplier.sync();
-      
       // Retrieve all suppliers
       const suppliers = await Supplier.findAll({attributes: ['id', 'supplier_name', ]});
 
@@ -30,7 +27,6 @@ const SupplierController = {
 
   AddSupplier: async (request, response) => {
     try {
-      await Supplier.sync();
       const { supplier_name } = request.body;
   
       // Create a new supplier record
@@ -64,8 +60,6 @@ const SupplierController = {
 
   GetSupplierByName: async (request, response) => {
     try {
-      await Supplier.sync();
-
       const { supplier_name } = request.query;
 
       if(!supplier_name){

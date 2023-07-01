@@ -11,7 +11,10 @@ const Customer = sequelize.define('Customer', {
     type: Sequelize.STRING,
   },
 }, {
-  timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns
+  timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
+  tableName: 'customers'
+
+  
 });
 
 module.exports = Customer;
