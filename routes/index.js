@@ -9,6 +9,7 @@ const TransactionTypeController = require("../controllers/TransactionTypeControl
 const OrderController = require("../controllers/OrderController")
 const OrderItemsController = require("../controllers/OrderItemsController");
 const SalesController = require('../controllers/SalesController');
+const GeneralJournalController = require('../controllers/GeneralJournalController');
 
 //NOTE - TEST ROUTE
 router.get("/", (req, res) => {
@@ -55,5 +56,10 @@ router.get("/api/order-items", OrderItemsController.GetFullOrder)
 router.get("/api/sales", SalesController.GetAllSales)
 router.get("/api/product/sales", SalesController.GetSalesByProductId)
 router.get("/api/order/sales", SalesController.GetSalesByOrderId)
+
+//NOTE - GENERAL JOURNAL ROUTES
+router.get("/api/journal", GeneralJournalController.GetAllJournalEntries)
+router.get("/api/fat/journal", GeneralJournalController.GetEntriesByFinancialElemType)
+router.get("/api/date/journal", GeneralJournalController.GetEntriesByDate)
 
 module.exports = router;
