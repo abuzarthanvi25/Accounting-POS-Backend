@@ -57,20 +57,21 @@ const CustomerController = {
         const suppliers = await Supplier.findAll({
           where: {
           id: supplier_id
-        }
+        },
+        transaction
       });
 
       if(suppliers && suppliers?.length > 0){
           
         const productResponse = await Product.create({
           supplier_id , product_name , unit_cost ,unit_price,
-        }, { fields: ['supplier_id','product_name', 'unit_cost','unit_price'] }, { transaction });
+        }, { fields: ['supplier_id','product_name', 'unit_cost','unit_price'], transaction } );
 
   
         if(productResponse){
           const inventoryResponse = await Inventory.create({
              product_id:productResponse?.id , quantity_in_stock:quantity_in_stock,
-          }, { fields: ['product_id', 'quantity_in_stock'] }, { transaction });
+          }, { fields: ['product_id', 'quantity_in_stock'], transaction} );
 
           if(inventoryResponse){
 
