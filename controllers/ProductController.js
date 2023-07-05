@@ -10,7 +10,7 @@ const {getFinancialElementTypeId, getTransactionTypeModelId} = require("../helpe
 
 const sequelize = require('../db/sequelize')
 
-const CustomerController = {
+const ProductController = {
   GetAllProducts: async (request, response) => {
     
     try {
@@ -175,4 +175,4 @@ const CustomerController = {
 };
 
 
-module.exports = CustomerController;
+module.exports = ProductController;
