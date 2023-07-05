@@ -41,6 +41,7 @@ router.get("/api/inventory", InventoryController.GetAllInventory)
 
 //NOTE - FINANCIAL ELEMENT TYPE ROUTES ===================== >
 router.get("/api/elem-types", FinancialElemTypeController.GetAllFinancialElemTypes)
+router.get("/api/single/elem-types", FinancialElemTypeController.GetFinancialElemTypeById)
 
 //NOTE - TRANSACTION TYPE ROUTES ===================== >
 router.get("/api/transaction-types", TransactionTypeController.GetAllTransactionTypes)

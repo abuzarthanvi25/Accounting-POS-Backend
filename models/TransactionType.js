@@ -12,7 +12,7 @@ const TransactionType = sequelize.define('TransactionType', {
   },
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
-  tableName: 'transaction_type'
+  tableName: 'transaction_types'
 });
 
 

@@ -10,10 +10,13 @@ const Product = sequelize.define('Product', {
   },
   supplier_id: {
     type: Sequelize.INTEGER,
-    field: 'supplier_id'
+    // field: 'supplier_id'
   },
   product_name: {
     type: Sequelize.STRING
+  },
+  unit_cost: {
+    type: Sequelize.INTEGER,
   },
   unit_price: {
     type: Sequelize.INTEGER,

@@ -5,7 +5,7 @@ const InventoryController = {
     
     try {
       // Retrieve all products
-      const allInventory = await Inventory.findAll({attributes: ['id', 'supplier_id', 'product_id', 'quantity_in_stock']});
+      const allInventory = await Inventory.findAll();
 
       if(allInventory){
         response.json({

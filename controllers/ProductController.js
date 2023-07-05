@@ -1,6 +1,14 @@
 const Product = require("../models/Product")
 const Supplier = require("../models/Supplier")
 const Inventory = require("../models/Inventory")
+const Journal = require("../models/GeneralJournal")
+
+const moment = require('moment');
+
+const {FinancialElemTypes, TransactionTypes, AccountTitles} = require("../constants")
+const {getFinancialElementTypeId, getTransactionTypeModelId} = require("../helpers/helpers")
+
+const sequelize = require('../db/sequelize')
 
 const CustomerController = {
   GetAllProducts: async (request, response) => {
@@ -39,35 +47,62 @@ const CustomerController = {
   AddProduct: async (request, response) => {
     
     try {
-      const { supplier_id, product_name, quantity_in_stock, unit_price } = request.body;
+      const transaction = await sequelize.transaction();
+
+      const { supplier_id, product_name, quantity_in_stock, unit_cost ,unit_price } = request.body;
   
       // Create a new product record
-      if( supplier_id && product_name && quantity_in_stock && unit_price){
+      if( supplier_id && product_name && quantity_in_stock && unit_cost && unit_price ){
 
-        const findSupplier = await Supplier.findAll({
+        const suppliers = await Supplier.findAll({
           where: {
           id: supplier_id
         }
       });
 
-      if(findSupplier && findSupplier?.length > 0){
+      if(suppliers && suppliers?.length > 0){
           
         const productResponse = await Product.create({
-          supplier_id , product_name , quantity_in_stock , unit_price,
-        }, { fields: ['supplier_id','product_name', 'quantity_in_stock', 'unit_price'] });
+          supplier_id , product_name , unit_cost ,unit_price,
+        }, { fields: ['supplier_id','product_name', 'unit_cost','unit_price'] }, { transaction });
 
   
         if(productResponse){
           const inventoryResponse = await Inventory.create({
-            supplier_id , product_id:productResponse?.id , quantity_in_stock:productResponse?.quantity_in_stock , unit_price: productResponse?.unit_price,
-          }, { fields: ['supplier_id','product_id', 'quantity_in_stock'] });
+             product_id:productResponse?.id , quantity_in_stock:quantity_in_stock,
+          }, { fields: ['product_id', 'quantity_in_stock'] }, { transaction });
 
           if(inventoryResponse){
-            response.json({
-              message: "Product added successfully",
-              status: true,
-              data: productResponse,
-            });
+
+            const journalPayload = [
+              {
+                transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
+                financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+                date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+                account_title: AccountTitles.Inventory,
+                amount: unit_cost
+              },
+              {
+                transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Credit),
+                financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+                date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+                account_title: AccountTitles.Cash,
+                amount: unit_cost
+              }
+            ]
+
+            Journal.bulkCreate(journalPayload, { transaction }).then((journalResponse)=>{
+              transaction.commit();
+              response.json({
+                message: "Product added successfully",
+                status: true,
+                data: {product: productResponse, journalEntries: journalResponse},
+                
+              });
+            }).catch((error) => {
+              response.status(400).json({ message: 'Error while adding product', status: false, error:error });
+            })
+
             return
           }else{
             response.status(400).json({ message: 'Error while adding product', status: false });
@@ -77,8 +112,6 @@ const CustomerController = {
       } else{
         response.status(400).json({ message: 'Supplier id is invalid' });
       }
-
-
 
       }else{
         response.status(400).json({ message: 'All fields are required' });
