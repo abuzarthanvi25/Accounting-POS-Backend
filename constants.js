@@ -14,7 +14,10 @@ const TransactionTypes = {
 
 const AccountTitles = {
     Cash: "Cash",
-    Inventory: "Inventory"
+    Inventory: "Inventory",
+    CostOfGoodsSold: "Cost of Goods Sold",
+    AccountsReceivable: "Accounts Receivable",
+    SalesRevenue: "Sales Revenue"
 }
 
 module.exports = {
