@@ -171,7 +171,53 @@ const GeneralJournalController = {
   },
 
   GenerateBalanceSheet: async (request, response) => {
+    try {
+      const {date_of_transaction} = request.query
 
+      if(!date_of_transaction){
+        response.status(400).json({
+          message: "Date of transaction is required",
+          status: false,
+        });
+        return
+      }
+
+      GeneralJournalModel.findAll({
+        where: {
+          date_of_transaction: date_of_transaction,
+          financial_element_type_id: {
+            [Op.in]: [FinancialElemTypes.Asset, FinancialElemTypes.Capital, FinancialElemTypes.Liability],
+          }
+        }
+      }).then((entries) => {
+        if(entries.length > 0 ){
+          response.json({
+            message: `All Assets, Capital and Liability Entries for the date ${date_of_transaction} get successfully`,
+            status: true,
+            data: entries,
+          });
+        }else{
+          response.json({
+            message: `No Assets, Capital and Liability Entries for the date ${date_of_transaction} found`,
+            status: false,
+            data: entries,
+          });
+        }
+      }).catch((error) => {
+        response.status(400).json({
+          message: "Error fetching Assets, Capital and Liability entries by date of transaction",
+          status: false,
+          error: error
+        });
+      });
+    }catch (error) {
+      console.log(error)
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
   },
 
   GenerateStatementOfOwnersEquity: async (request, response) => {
