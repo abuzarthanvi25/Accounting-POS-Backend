@@ -2,9 +2,13 @@ const OrderItemsModel = require("../models/OrderItems")
 const OrderModel = require("../models/Order")
 const InventoryModel = require("../models/Inventory")
 const SalesModel = require("../models/Sales")
-const ProductModel = require("../models/Product")
+const Journal = require("../models/GeneralJournal")
 
 const sequelize = require('../db/sequelize')
+const moment = require('moment');
+
+const { TransactionTypes, FinancialElemTypes, AccountTitles } = require('../constants')
+const { getTransactionTypeModelId, getFinancialElementTypeId } = require('../helpers/helpers')
 
 const OrderItemsController = {
   GetFullOrder: async (request, response) => {
@@ -55,11 +59,46 @@ const OrderItemsController = {
     try {
       const transaction = await sequelize.transaction();
       
-      const { customer_id, sub_total, order_items } = request.body
+      const { customer_id, order_items } = request.body
 
       const order_date = new Date().toString()
 
-      if(customer_id && sub_total && order_date && order_items){
+      const sub_total = order_items.reduce((accumulator, product) => {
+        return accumulator + product.unit_price;
+      }, 0);
+
+      let journalPayload = []
+
+      journalPayload.push({
+        transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
+        financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+        date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+        account_title: AccountTitles.AccountsReceivable,
+        amount: sub_total
+      })
+
+      order_items?.forEach((val) => {
+        journalPayload.push({
+          transaction_type_id: TransactionTypes.Credit,
+          financial_element_type_id: FinancialElemTypes.Asset,
+          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+          account_title: AccountTitles.Inventory,
+          amount: val?.unit_price
+        })
+      })
+
+      const journalResponse = await Journal.bulkCreate(journalPayload, { transaction })
+
+      if(!journalResponse || journalResponse.length == 0){
+        response.status(400).json({
+          message: "Error creating journal entries",
+          status: false,
+        });
+        return
+      }
+      
+
+      if(customer_id && sub_total && order_date && order_items && journalResponse){
         //SECTION - Creating order
         OrderModel.create({
           customer_id: customer_id,
@@ -97,14 +136,15 @@ const OrderItemsController = {
                     unit_cost: val?.unit_cost,
                     unit_price: val?.unit_price,
                     date: order_date
-                  }).then((sales)=>{
+                  }, { fields: ['order_id','product_id', 'quantity_sold','unit_cost', 'unit_price', 'date'], transaction }).then((sales)=>{
                   transaction.commit();
                   response.json({
                     message: `Order with order id ${order?.id} created successfully`,
                     status: true,
                     order_id: order?.id,
                     order: orderItemsPayload,
-                    sales: sales
+                    sales: sales,
+                    journalEntries: journalResponse
                   })
                   }).catch((error)=>{
                     response.status(400).json({
