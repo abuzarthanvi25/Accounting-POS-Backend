@@ -61,7 +61,7 @@ const OrderItemsController = {
       
       const { customer_id, order_items } = request.body
 
-      const order_date = new Date().toString()
+      const order_date = moment(new Date()).format("DD/MM/YYYY").toString()
 
       const sub_total = order_items.reduce((accumulator, product) => {
         return accumulator + product.unit_price;
@@ -143,7 +143,6 @@ const OrderItemsController = {
                     status: true,
                     order_id: order?.id,
                     order: orderItemsPayload,
-                    sales: sales,
                     journalEntries: journalResponse
                   })
                   }).catch((error)=>{
