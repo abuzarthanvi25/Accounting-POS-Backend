@@ -31,6 +31,13 @@ const OrderItemsController = {
           });
     
           if(OrderItems){
+            if(OrderItems.length == 0){
+              response.status(400).json({
+                message: `Invalid order id`,
+                status: true,
+              });
+              return
+            }
             response.json({
               message: `${OrderItems?.length} Order items get successfully`,
               status: true,

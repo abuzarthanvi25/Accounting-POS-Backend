@@ -46,19 +46,19 @@ router.get("/api/single/elem-types", FinancialElemTypeController.GetFinancialEle
 //NOTE - TRANSACTION TYPE ROUTES ===================== >
 router.get("/api/transaction-types", TransactionTypeController.GetAllTransactionTypes)
 
-//NOTE - ORDER ROUTES
+//NOTE - ORDER ROUTES ===================== >
 router.get("/api/orders", OrderController.GetAllOrders)
 router.post("/api/orders", OrderItemsController.CreateAnOrder)
 
-//NOTE - ORDER ITEM ROUTES
+//NOTE - ORDER ITEM ROUTES ===================== >
 router.get("/api/order-items", OrderItemsController.GetFullOrder)
 
-//NOTE - SALES ROUTES
+//NOTE - SALES ROUTES ===================== >
 router.get("/api/sales", SalesController.GetAllSales)
 router.get("/api/product/sales", SalesController.GetSalesByProductId)
 router.get("/api/order/sales", SalesController.GetSalesByOrderId)
 
-//NOTE - GENERAL JOURNAL ROUTES
+//NOTE - GENERAL JOURNAL ROUTES ===================== >
 router.get("/api/journal", GeneralJournalController.GetAllJournalEntries)
 router.get("/api/fat/journal", GeneralJournalController.GetEntriesByFinancialElemType)
 router.get("/api/date/journal", GeneralJournalController.GetEntriesByDate)
