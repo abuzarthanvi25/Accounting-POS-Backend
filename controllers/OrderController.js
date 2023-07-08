@@ -1,11 +1,12 @@
 const Order = require("../models/Order")
+const OrderItems = require("../models/OrderItems")
 
 const OrderController = {
   GetAllOrders: async (request, response) => {
     
     try {
       // Retrieve all orders
-      const orders = await Order.findAll();
+      const orders = await Order.findAll({include: OrderItems});
 
       if(orders){
         response.json({
