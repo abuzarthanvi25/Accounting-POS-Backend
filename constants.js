@@ -17,11 +17,21 @@ const AccountTitles = {
     Inventory: "Inventory",
     CostOfGoodsSold: "Cost of Goods Sold",
     AccountsReceivable: "Accounts Receivable",
-    SalesRevenue: "Sales Revenue"
+    SalesRevenue: "Sales Revenue",
+    SalesTaxExpense: "Sales Tax Expense",
+    SalesTaxPayable: "Sales Tax Payable",
+    Product: "Product",
+    GoodsAndServicesTax: "Goods and Services Tax"
+}
+
+const NumericalConstants = {
+    SalesTaxRate: 0.05, // 5% Sales Tax Rate,
+    GoodsAndServicesTaxRate: 0.1 // 10% Goods and Servies Tax
 }
 
 module.exports = {
     FinancialElemTypes,
     TransactionTypes,
-    AccountTitles
+    AccountTitles,
+    NumericalConstants
 }

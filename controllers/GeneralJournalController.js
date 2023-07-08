@@ -1,4 +1,6 @@
 const GeneralJournalModel = require("../models/GeneralJournal")
+const { FinancialElemTypes }  = require("../constants")
+const { Op } = require('sequelize');
 
 const GeneralJournalController = {
   GetAllJournalEntries: async (request, response) => {
@@ -118,11 +120,57 @@ const GeneralJournalController = {
     }
   },
 
-  GenerateBalanceSheet: async (request, response) => {
+  GenerateIncomeStatement: async (request, response) => {
+    try {
+      const {date_of_transaction} = request.query
 
+      if(!date_of_transaction){
+        response.status(400).json({
+          message: "Date of transaction is required",
+          status: false,
+        });
+        return
+      }
+
+      GeneralJournalModel.findAll({
+        where: {
+          date_of_transaction: date_of_transaction,
+          financial_element_type_id: {
+            [Op.in]: [FinancialElemTypes.Revenue, FinancialElemTypes.Expense],
+          }
+        }
+      }).then((entries) => {
+        if(entries.length > 0 ){
+          response.json({
+            message: `All Revenue and Expense Entries for the date ${date_of_transaction} get successfully`,
+            status: true,
+            data: entries,
+          });
+        }else{
+          response.json({
+            message: `No Revenue and Expense Entries for the date ${date_of_transaction} found`,
+            status: false,
+            data: entries,
+          });
+        }
+      }).catch((error) => {
+        response.status(400).json({
+          message: "Error fetching Revenue and Expense entries by date of transaction",
+          status: false,
+          error: error
+        });
+      });
+    }catch (error) {
+      console.log(error)
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
   },
 
-  GenerateIncomeStatement: async (request, response) => {
+  GenerateBalanceSheet: async (request, response) => {
 
   },
 

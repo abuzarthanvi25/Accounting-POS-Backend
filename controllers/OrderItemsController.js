@@ -7,7 +7,7 @@ const Journal = require("../models/GeneralJournal")
 const sequelize = require('../db/sequelize')
 const moment = require('moment');
 
-const { TransactionTypes, FinancialElemTypes, AccountTitles } = require('../constants')
+const { TransactionTypes, FinancialElemTypes, AccountTitles, NumericalConstants } = require('../constants')
 const { getTransactionTypeModelId, getFinancialElementTypeId } = require('../helpers/helpers')
 
 const OrderItemsController = {
@@ -82,16 +82,41 @@ const OrderItemsController = {
         date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
         account_title: AccountTitles.AccountsReceivable,
         amount: sub_total
-      })
+      },
+      {
+        transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
+        financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Expense),
+        date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+        account_title: AccountTitles.GoodsAndServicesTax,
+        amount: sub_total * NumericalConstants.GoodsAndServicesTaxRate
+      }
+      )
 
       order_items?.forEach((val) => {
         journalPayload.push({
           transaction_type_id: TransactionTypes.Credit,
           financial_element_type_id: FinancialElemTypes.Asset,
           date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-          account_title: AccountTitles.Inventory,
+          account_title: `${AccountTitles.Product}`,
           amount: val?.unit_price
         })
+
+        journalPayload.push({
+          transaction_type_id: TransactionTypes.Debit,
+          financial_element_type_id: FinancialElemTypes.Expense,
+          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+          account_title: AccountTitles.SalesTaxExpense,
+          amount: val?.unit_price * NumericalConstants.SalesTaxRate
+        })
+
+        journalPayload.push({
+          transaction_type_id: TransactionTypes.Credit,
+          financial_element_type_id: FinancialElemTypes.Revenue,
+          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+          account_title: AccountTitles.SalesRevenue,
+          amount: val?.unit_price
+        })
+
       })
 
       const journalResponse = await Journal.bulkCreate(journalPayload, { transaction })

@@ -62,5 +62,6 @@ router.get("/api/order/sales", SalesController.GetSalesByOrderId)
 router.get("/api/journal", GeneralJournalController.GetAllJournalEntries)
 router.get("/api/fat/journal", GeneralJournalController.GetEntriesByFinancialElemType)
 router.get("/api/date/journal", GeneralJournalController.GetEntriesByDate)
+router.get("/api/income-summary/journal", GeneralJournalController.GenerateIncomeStatement)
 
 module.exports = router;
