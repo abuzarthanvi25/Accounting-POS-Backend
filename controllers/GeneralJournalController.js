@@ -1,6 +1,7 @@
 const GeneralJournalModel = require("../models/GeneralJournal")
 const { FinancialElemTypes }  = require("../constants")
 const { Op } = require('sequelize');
+const { getNetIncome } = require("../helpers/helpers")
 
 const GeneralJournalController = {
   GetAllJournalEntries: async (request, response) => {
@@ -221,7 +222,41 @@ const GeneralJournalController = {
   },
 
   GenerateStatementOfOwnersEquity: async (request, response) => {
+    try {
+      const capitalAndDrawingEntries = await GeneralJournalModel.findAll({
+        where: {
+          financial_element_type_id: {
+            [Op.in]: [FinancialElemTypes.Capital, FinancialElemTypes.Drawing],
+          }
+        }
+      })
 
+      if(!capitalAndDrawingEntries){
+        response.status(400).json({
+          message: "Error Capital entries by date of transaction",
+          status: false,
+        });
+      }
+
+      const netIncomeData = await getNetIncome(response)
+
+      response.json({
+        message: 'All Capital Journal Enties and net income get sucessfully',
+        status: false,
+        data: {capitalAndDrawingEntries: capitalJournalEntries, netIncome: netIncomeData},
+        
+      })
+
+
+
+    }catch (error) {
+      console.log(error)
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
   }
 };
 
