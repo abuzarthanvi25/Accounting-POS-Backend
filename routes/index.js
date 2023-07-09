@@ -29,6 +29,7 @@ router.delete("/api/customer", CustomerController.DeleteCustomer)
 
 //NOTE - PRODUCT ROUTES ===================== >
 router.get("/api/products", ProductController.GetAllProducts)
+router.get("/api/marketplace/products", ProductController.GetMarketPlaceProducts)
 router.post("/api/products", ProductController.AddProduct)
 
 //NOTE - SUPPLIER ROUTES ===================== >
@@ -38,6 +39,7 @@ router.post("/api/suppliers", SupplierController.AddSupplier)
 
 //NOTE - INVENTORY ROUTES ===================== >
 router.get("/api/inventory", InventoryController.GetAllInventory)
+router.post("/api/add-products/inventory", InventoryController.AddProductsToInventory)
 
 //NOTE - FINANCIAL ELEMENT TYPE ROUTES ===================== >
 router.get("/api/elem-types", FinancialElemTypeController.GetAllFinancialElemTypes)

@@ -171,7 +171,31 @@ const ProductController = {
         error: error
       });
     }
-  }
+  },
+
+  GetMarketPlaceProducts: async (request, response) => {
+    
+    try {
+      // Retrieve all products
+      const products = await Product.findAll();
+
+      if(products){
+        response.json({
+          message: "Products get successfully",
+          status: true,
+          data: products,
+        });
+        return
+      }
+    } catch (error) {
+      console.error('Error retrieving products:', error);
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
+  },
 };
 
 
