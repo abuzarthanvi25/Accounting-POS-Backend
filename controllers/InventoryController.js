@@ -1,5 +1,6 @@
 const Inventory = require("../models/Inventory")
 const Journal = require("../models/GeneralJournal")
+const Product = require("../models/Product")
 
 const sequelize = require('../db/sequelize');
 const moment = require('moment');
@@ -12,7 +13,9 @@ const InventoryController = {
     
     try {
       // Retrieve all products
-      const allInventory = await Inventory.findAll();
+      const allInventory = await Inventory.findAll({
+        include:Product
+      });
 
       if(allInventory){
         response.json({
