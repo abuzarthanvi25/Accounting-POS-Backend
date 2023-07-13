@@ -125,10 +125,38 @@ const GeneralJournalController = {
     try {
       const {date_of_transaction} = request.query
 
+      const netIncomeData = await getNetIncome(response)
+
       if(!date_of_transaction){
-        response.status(400).json({
-          message: "Date of transaction is required",
-          status: false,
+        GeneralJournalModel.findAll({
+          where: {
+            financial_element_type_id: {
+              [Op.in]: [FinancialElemTypes.Revenue, FinancialElemTypes.Expense],
+            }
+          }
+        }).then((entries) => {
+          if(entries.length > 0 ){
+            response.json({
+              message: `All Revenue and Expense Entries get successfully`,
+              status: true,
+              data: {
+                revenueAndExpenseEntries: entries,
+                netIncome: netIncomeData
+              },
+            });
+          }else{
+            response.json({
+              message: `No Revenue and Expense Entries found`,
+              status: false,
+              data: entries,
+            });
+          }
+        }).catch((error) => {
+          response.status(400).json({
+            message: "Error fetching Revenue and Expense entries by date of transaction",
+            status: false,
+            error: error
+          });
         });
         return
       }
@@ -145,7 +173,10 @@ const GeneralJournalController = {
           response.json({
             message: `All Revenue and Expense Entries for the date ${date_of_transaction} get successfully`,
             status: true,
-            data: entries,
+            data: {
+              revenueAndExpenseEntries: entries,
+              netIncome: netIncomeData
+            },
           });
         }else{
           response.json({
@@ -176,9 +207,32 @@ const GeneralJournalController = {
       const {date_of_transaction} = request.query
 
       if(!date_of_transaction){
-        response.status(400).json({
-          message: "Date of transaction is required",
-          status: false,
+        GeneralJournalModel.findAll({
+          where: {
+            financial_element_type_id: {
+              [Op.in]: [FinancialElemTypes.Asset, FinancialElemTypes.Capital, FinancialElemTypes.Liability],
+            }
+          }
+        }).then((entries) => {
+          if(entries.length > 0 ){
+            response.json({
+              message: `All Assets, Capital and Liability Entries get successfully`,
+              status: true,
+              data: entries,
+            });
+          }else{
+            response.json({
+              message: `No Assets, Capital and Liability Entries found`,
+              status: false,
+              data: entries,
+            });
+          }
+        }).catch((error) => {
+          response.status(400).json({
+            message: "Error fetching Assets, Capital and Liability entries",
+            status: false,
+            error: error
+          });
         });
         return
       }

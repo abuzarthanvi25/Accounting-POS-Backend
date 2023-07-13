@@ -54,20 +54,27 @@ const InventoryController = {
           transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
           financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
           date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-          account_title: AccountTitles.AccountsReceivable,
+          account_title: AccountTitles.Inventory,
+          amount: sub_total
+        })
+        journalPayload.push({
+          transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Credit),
+          financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+          account_title: AccountTitles.Cash,
           amount: sub_total
         })
 
         for(const product of products_bought){
-          const {id: productId, quantity, unit_cost} = product
+          const {id: productId, quantity} = product
 
-          journalPayload.push({
-            transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Credit),
-            financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
-            date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-            account_title: AccountTitles.Product,
-            amount: unit_cost
-          })
+          // journalPayload.push({
+          //   transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Credit),
+          //   financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+          //   date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+          //   account_title: AccountTitles.Product,
+          //   amount: unit_cost
+          // })
 
           const existingProductInInventory = await Inventory.findOne({
             where:{

@@ -74,6 +74,10 @@ const OrderItemsController = {
         return accumulator + product.unit_price;
       }, 0);
 
+      const COGS = order_items.reduce((accumulator, product) => {
+        return accumulator + product.unit_cost;
+      }, 0);
+
       let journalPayload = []
       let apiResponse = {
         createdOrderItems: [],
@@ -81,48 +85,64 @@ const OrderItemsController = {
         updatedInventory: []
       }
 
-      journalPayload.push({
+      journalPayload.push(
+        {
         transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
         financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
         date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-        account_title: AccountTitles.AccountsReceivable,
+        account_title: AccountTitles.Cash,
+        amount: sub_total
+      },
+      {
+        transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
+        financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Revenue),
+        date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+        account_title: AccountTitles.SalesRevenue,
         amount: sub_total
       },
       {
         transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Debit),
         financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Expense),
         date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-        account_title: AccountTitles.GoodsAndServicesTax,
-        amount: sub_total * NumericalConstants.GoodsAndServicesTaxRate
-      }
+        account_title: AccountTitles.CostOfGoodsSold,
+        amount: COGS
+      },
+      {
+        transaction_type_id: await getTransactionTypeModelId(TransactionTypes.Credit),
+        financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
+        date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+        account_title: AccountTitles.Inventory,
+        amount: COGS
+      },
+
       )
 
-      order_items?.forEach((val) => {
-        journalPayload.push({
-          transaction_type_id: TransactionTypes.Credit,
-          financial_element_type_id: FinancialElemTypes.Asset,
-          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-          account_title: `${AccountTitles.Product}`,
-          amount: val?.unit_price
-        })
+      // order_items?.forEach((val) => {
+      //   journalPayload.push({
+      //     transaction_type_id: TransactionTypes.Credit,
+      //     financial_element_type_id: FinancialElemTypes.Asset,
+      //     date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+      //     account_title: `${AccountTitles.Product}`,
+      //     amount: val?.unit_price
+      //   })
 
-        journalPayload.push({
-          transaction_type_id: TransactionTypes.Debit,
-          financial_element_type_id: FinancialElemTypes.Expense,
-          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-          account_title: AccountTitles.SalesTaxExpense,
-          amount: val?.unit_price * NumericalConstants.SalesTaxRate
-        })
+      //   journalPayload.push({
+      //     transaction_type_id: TransactionTypes.Debit,
+      //     financial_element_type_id: FinancialElemTypes.Expense,
+      //     date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+      //     account_title: AccountTitles.SalesTaxExpense,
+      //     amount: val?.unit_price * NumericalConstants.SalesTaxRate
+      //   })
 
-        journalPayload.push({
-          transaction_type_id: TransactionTypes.Credit,
-          financial_element_type_id: FinancialElemTypes.Revenue,
-          date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
-          account_title: AccountTitles.SalesRevenue,
-          amount: val?.unit_price
-        })
+      //   journalPayload.push({
+      //     transaction_type_id: TransactionTypes.Credit,
+      //     financial_element_type_id: FinancialElemTypes.Revenue,
+      //     date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
+      //     account_title: AccountTitles.SalesRevenue,
+      //     amount: val?.unit_price
+      //   })
 
-      })
+      // })
 
       const journalResponse = await Journal.bulkCreate(journalPayload, { transaction })
 
