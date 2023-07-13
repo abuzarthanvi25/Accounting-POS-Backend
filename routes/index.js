@@ -62,6 +62,7 @@ router.get("/api/order/sales", SalesController.GetSalesByOrderId)
 
 //NOTE - GENERAL JOURNAL ROUTES ===================== >
 router.get("/api/journal", GeneralJournalController.GetAllJournalEntries)
+router.post("/api/journal", GeneralJournalController.AddJournalEntry)
 router.get("/api/fat/journal", GeneralJournalController.GetEntriesByFinancialElemType)
 router.get("/api/date/journal", GeneralJournalController.GetEntriesByDate)
 router.get("/api/income-summary/journal", GeneralJournalController.GenerateIncomeStatement)

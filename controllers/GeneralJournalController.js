@@ -311,6 +311,50 @@ const GeneralJournalController = {
         error: error
       });
     }
+  },
+
+  AddJournalEntry: async (request, response) => {
+    try {
+      const {
+        financial_element_type_id,
+        transaction_type_id,
+        date_of_transaction,
+        account_title,
+        amount
+      } = request.body
+
+      if(financial_element_type_id &&
+        transaction_type_id &&
+        date_of_transaction &&
+        account_title &&
+        amount){
+        const journalEntry = await GeneralJournalModel.create({
+          financial_element_type_id,
+          transaction_type_id,
+          date_of_transaction,
+          account_title,
+          amount,
+        }, { fields: ['financial_element_type_id', 'transaction_type_id', 'date_of_transaction', 'account_title', 'amount'] });
+  
+        if(journalEntry){
+          response.json({
+            message: "Journal Entry added successfully",
+            status: true,
+            data: journalEntry,
+          });
+          return
+        }
+      }else{
+        response.status(400).json({ message: 'All Fields are required' });
+      }
+    } catch (error) {
+      console.log(error)
+      response.status(400).json({
+        message: "DB Error",
+        status: false,
+        error: error
+      });
+    }
   }
 };
 
