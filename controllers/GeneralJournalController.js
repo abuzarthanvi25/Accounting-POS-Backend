@@ -1,7 +1,8 @@
 const GeneralJournalModel = require("../models/GeneralJournal")
 const { FinancialElemTypes }  = require("../constants")
 const { Op } = require('sequelize');
-const { getNetIncome } = require("../helpers/helpers")
+const { getNetIncome } = require("../helpers/helpers");
+const moment = require('moment/moment');
 
 const GeneralJournalController = {
   GetAllJournalEntries: async (request, response) => {
@@ -163,7 +164,9 @@ const GeneralJournalController = {
 
       GeneralJournalModel.findAll({
         where: {
-          date_of_transaction: date_of_transaction,
+          date_of_transaction: {
+            [Op.lte]: date_of_transaction
+          },
           financial_element_type_id: {
             [Op.in]: [FinancialElemTypes.Revenue, FinancialElemTypes.Expense],
           }
@@ -239,7 +242,9 @@ const GeneralJournalController = {
 
       GeneralJournalModel.findAll({
         where: {
-          date_of_transaction: date_of_transaction,
+          date_of_transaction: {
+            [Op.lte]: date_of_transaction
+          },
           financial_element_type_id: {
             [Op.in]: [FinancialElemTypes.Asset, FinancialElemTypes.Capital, FinancialElemTypes.Liability],
           }
@@ -277,13 +282,32 @@ const GeneralJournalController = {
 
   GenerateStatementOfOwnersEquity: async (request, response) => {
     try {
-      const capitalAndDrawingEntries = await GeneralJournalModel.findAll({
-        where: {
-          financial_element_type_id: {
-            [Op.in]: [FinancialElemTypes.Capital, FinancialElemTypes.Drawing],
+
+      const { date_of_transaction } = request.query
+
+      let capitalAndDrawingEntries = null
+
+      if(!date_of_transaction){
+        capitalAndDrawingEntries = await GeneralJournalModel.findAll({
+          where: {
+            financial_element_type_id: {
+              [Op.in]: [FinancialElemTypes.Capital, FinancialElemTypes.Drawing],
+            }
           }
-        }
-      })
+        })
+      }else{
+        capitalAndDrawingEntries = await GeneralJournalModel.findAll({
+          where: {
+            date_of_transaction: {
+              [Op.lte]: date_of_transaction
+            },
+            financial_element_type_id: {
+              [Op.in]: [FinancialElemTypes.Capital, FinancialElemTypes.Drawing],
+            }
+          }
+        })
+      }
+
 
       if(!capitalAndDrawingEntries){
         response.status(400).json({
@@ -297,7 +321,7 @@ const GeneralJournalController = {
       response.json({
         message: 'All Capital Journal Enties and net income get sucessfully',
         status: false,
-        data: {capitalAndDrawingEntries: capitalJournalEntries, netIncome: netIncomeData},
+        data: {capitalAndDrawingEntries: capitalAndDrawingEntries, netIncome: netIncomeData},
         
       })
 
