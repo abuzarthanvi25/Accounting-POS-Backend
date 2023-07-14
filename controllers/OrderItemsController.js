@@ -112,7 +112,7 @@ const OrderItemsController = {
         financial_element_type_id: await getFinancialElementTypeId(FinancialElemTypes.Asset),
         date_of_transaction: moment(new Date()).format("DD/MM/YYYY"),
         account_title: AccountTitles.Inventory,
-        amount: COGS
+        amount: sub_total
       },
 
       )
