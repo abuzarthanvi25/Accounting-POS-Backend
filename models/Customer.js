@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize')
+const Orders = require("../models/Order")
 
 const Customer = sequelize.define('Customer', {
   id: {
@@ -16,5 +17,8 @@ const Customer = sequelize.define('Customer', {
 
   
 });
+
+Customer.hasMany(Orders, { foreignKey: 'customer_id' });
+Orders.belongsTo(Customer, { foreignKey: 'customer_id' });
 
 module.exports = Customer;

@@ -1,6 +1,6 @@
 const connection = require("../db/connection")
 const Customer = require("../models/Customer.js")
-
+const Orders = require("../models/Order")
 const CustomerController = {
   GetAll: (request, response) => {
 
@@ -27,7 +27,7 @@ const CustomerController = {
     
     try {
       // Retrieve all customers
-      const customers = await Customer.findAll({attributes: ['id', 'customer_name']});
+      const customers = await Customer.findAll({attributes: ['id', 'customer_name'], include: Orders});
 
       if(customers){
         response.json({
