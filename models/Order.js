@@ -16,7 +16,7 @@ customer_id: {
     type: Sequelize.INTEGER
   },
   order_date: {
-    type: Sequelize.DATE
+    type: Sequelize.STRING
   },
 }, {
   timestamps: false, // Disable automatic creation of 'createdAt' and 'updatedAt' columns,
