@@ -209,6 +209,8 @@ const GeneralJournalController = {
     try {
       const {date_of_transaction} = request.query
 
+      const netIncomeData = await getNetIncome(response)
+
       if(!date_of_transaction){
         GeneralJournalModel.findAll({
           where: {
@@ -254,7 +256,10 @@ const GeneralJournalController = {
           response.json({
             message: `All Assets, Capital and Liability Entries for the date ${date_of_transaction} get successfully`,
             status: true,
-            data: entries,
+            data: {
+              entries: entries,
+              netIncome: netIncomeData
+            },
           });
         }else{
           response.json({
