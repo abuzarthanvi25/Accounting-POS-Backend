@@ -3,7 +3,7 @@ const TransactionTypeModel = require("../models/TransactionType")
 const GeneralJournalModel = require("../models/GeneralJournal")
 
 const { Op } = require('sequelize');
-const { FinancialElemTypes } = require('../constants');
+const { FinancialElemTypes, TransactionTypes } = require('../constants');
 
 const responseHandler = (response ,responseCode, error, message) => {
     return response.status(responseCode).json({
@@ -106,9 +106,62 @@ const getNetIncome = async (response) => {
     }
 }
 
+const getTotalCapital = async (response) => {
+    try {
+        const allCapitalEntries = await GeneralJournalModel.findAll({
+            where: {
+              financial_element_type_id: {
+                [Op.in]: [FinancialElemTypes.Capital],
+              }
+            }
+          })
+
+        if(allCapitalEntries.length == 0){
+            response.status(400).json({
+                message: "No Capital entries found",
+                status: false,
+            })
+            return
+        }
+
+
+        const modifiedData = allCapitalEntries.reduce((accumulator, entry) => {
+            if(entry.transaction_type_id == TransactionTypes.Debit){
+                accumulator.debitEntries.push(entry)
+            }else if(entry.transaction_type_id == TransactionTypes.Credit){
+                accumulator.creditEntries.push(entry)
+            }
+
+            return accumulator
+          }, {debitEntries: [], creditEntries: []});
+
+          const debitTotal =  modifiedData.debitEntries.reduce((accumulator, debitEntry) => {
+            return accumulator + debitEntry.amount
+          }, 0)
+
+          const creditTotal =  modifiedData.creditEntries.reduce((accumulator, creditEntry) => {
+            return accumulator + creditEntry.amount
+          }, 0)
+
+          const totalCapital = Math.abs(debitTotal - creditTotal)
+
+          return totalCapital
+
+    } catch (error) {
+        console.log(error, "error")
+        response.status(400).json({
+            message: "DB error",
+            status: false,
+            error: error
+        })
+        return
+    }
+}
+
 module.exports = {
     responseHandler,
     getFinancialElementTypeId,
     getTransactionTypeModelId,
-    getNetIncome
+    getNetIncome,
+    getTotalCapital
 }

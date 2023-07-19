@@ -10,6 +10,7 @@ const OrderController = require("../controllers/OrderController")
 const OrderItemsController = require("../controllers/OrderItemsController");
 const SalesController = require('../controllers/SalesController');
 const GeneralJournalController = require('../controllers/GeneralJournalController');
+const DashboardController = require("../controllers/DashboardController")
 
 //NOTE - TEST ROUTE
 router.get("/", (req, res) => {
@@ -68,5 +69,8 @@ router.get("/api/date/journal", GeneralJournalController.GetEntriesByDate)
 router.get("/api/income-summary/journal", GeneralJournalController.GenerateIncomeStatement)
 router.get("/api/balance-sheet/journal", GeneralJournalController.GenerateBalanceSheet)
 router.get("/api/owners-equity/journal", GeneralJournalController.GenerateStatementOfOwnersEquity)
+
+//NOTE - DASHBOARD ROUTES ===================== >
+router.get("/api/dashboard", DashboardController.GetDashboardData)
 
 module.exports = router;
