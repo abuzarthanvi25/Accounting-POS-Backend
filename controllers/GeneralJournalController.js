@@ -244,9 +244,9 @@ const GeneralJournalController = {
 
       GeneralJournalModel.findAll({
         where: {
-          date_of_transaction: {
-            [Op.lte]: date_of_transaction
-          },
+          // date_of_transaction: {
+          //   [Op.lte]: date_of_transaction
+          // },
           financial_element_type_id: {
             [Op.in]: [FinancialElemTypes.Asset, FinancialElemTypes.Capital, FinancialElemTypes.Liability],
           }
@@ -303,9 +303,9 @@ const GeneralJournalController = {
       }else{
         capitalAndDrawingEntries = await GeneralJournalModel.findAll({
           where: {
-            date_of_transaction: {
-              [Op.lte]: date_of_transaction
-            },
+            // date_of_transaction: {
+            //   [Op.lte]: date_of_transaction
+            // },
             financial_element_type_id: {
               [Op.in]: [FinancialElemTypes.Capital, FinancialElemTypes.Drawing],
             }

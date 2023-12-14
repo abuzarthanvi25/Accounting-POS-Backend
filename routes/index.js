@@ -1,5 +1,7 @@
 let express = require("express");
 let router = express.Router();
+
+const AuthenticationController = require("../controllers/AuthenticationController")
 const CustomerController = require("../controllers/CustomerController")
 const ProductController = require("../controllers/ProductController")
 const SupplierController = require("../controllers/SupplierController")
@@ -21,6 +23,10 @@ router.get("/", (req, res) => {
   });
 
 // < ============================================== MAIN ROUTES ============================================== >
+
+//NOTE - ADMIN AUTHENTICATION ROUTES ===================== >
+router.post("/api/signup", AuthenticationController.Signup)
+router.post("/api/login", AuthenticationController.Login)
 
 //NOTE - CUSTOMER ROUTES ===================== >
 router.get("/api/customer", CustomerController.GetAllCustomers)
