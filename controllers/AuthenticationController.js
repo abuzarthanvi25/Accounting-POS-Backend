@@ -57,14 +57,14 @@ const AuthenticationController = {
   
   Login: async (request, response) => {
     try {
-      const { email, password, userName } = request.body;
+      const { email, password } = request.body;
   
       const errors = validationResult(request);
       if (!errors.isEmpty()) {
         return response.status(400).json({ errors: errors.array() });
       }
 
-      if (!email || !password || !userName) {
+      if (!email || !password ) {
         return response.status(400).json({
           message: "Required fields are missing",
           status: false,
